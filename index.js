@@ -14,14 +14,14 @@ class SplunkPlugin {
 
     this.hooks = {
       'before:package:initialize': this.update.bind(this),
-      'before:package:compileEvemts': this.add.bind(this)
+      'before:package:compileEvemts': this.addFunction.bind(this)
     }
   }
 
   /**
    * Add Splunk function to this package
    */
-  add () {
+  addFunction () {
     const service = this.serverless.service
     const stage = this.stage
 
@@ -29,6 +29,8 @@ class SplunkPlugin {
       // Use a function that already exists
       return
     }
+
+    this.serverless.cli.log('Adding Splunk Function...')
 
     service.provider.environment.SPLUNK_HEC_URL = service.custom.splunk.url
     service.provider.environment.SPLUNK_HEC_TOKEN = service.custom.splunk.token
@@ -41,6 +43,7 @@ class SplunkPlugin {
       events: []
     }
 
+    this.serverless.cli.log('Splunk Function Added...')
     console.log(service.functions)
   }
 
