@@ -24,7 +24,6 @@ class SplunkPlugin {
   add () {
     const service = this.serverless.service
     const stage = this.stage
-    const serviceName = stage ? `${service.service}-${stage}` : service.service
 
     if (service.custom.splunk.arn) {
       // Use a function that already exists
@@ -35,15 +34,14 @@ class SplunkPlugin {
     service.provider.environment.SPLUNK_HEC_TOKEN = service.custom.splunk.token
 
     const functionPath = path.resolve(__dirname, 'splunk/splunk-cloudwatch-logs-processor')
-
-    if (!fs.existsSync(functionPath)) {
-      fs.mkdirSync(functionPath)
-    }
+    console.log(functionPath)
 
     service.functions.splunk = {
-      handler: 'index.handler',
+      handler: `${functionPath}/index.handler`,
       events: []
     }
+
+    console.log(service.functions)
   }
 
   /**
