@@ -95,7 +95,7 @@ class SplunkPlugin {
       }
     }
 
-    const resources = {}
+    const resource = {}
 
     const LogBase = {
       Type: 'AWS::Logs::SubscriptionFilter',
@@ -116,7 +116,7 @@ class SplunkPlugin {
       }
     }
 
-    _.extend(resources, splunkLambdaPermission)
+    _.extend(resource, splunkLambdaPermission)
 
     service.getAllFunctions().forEach((functionName) => {
       if (functionName !== `${serviceName}-splunk`) {
@@ -130,7 +130,7 @@ class SplunkPlugin {
 
         log.DependsOn.push(functionName)
 
-        _.extend(resources, { [`${logName}`]: log })
+        _.extend(resource, { [`${logName}`]: log })
       }
     })
 
