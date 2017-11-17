@@ -14,14 +14,14 @@ class SplunkPlugin {
 
     this.hooks = {
       'before:package:initialize': this.update.bind(this),
-      'before:package:compileEvemts': this.addFunction.bind(this)
+      'before:package:compileEvents': this.add.bind(this)
     }
   }
 
   /**
    * Add Splunk function to this package
    */
-  addFunction () {
+  add () {
     const service = this.serverless.service
     const stage = this.stage
 
