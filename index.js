@@ -35,8 +35,7 @@ class SplunkPlugin {
     service.provider.environment.SPLUNK_HEC_URL = service.custom.splunk.url
     service.provider.environment.SPLUNK_HEC_TOKEN = service.custom.splunk.token
 
-
-    const functionPath = path.relative(this.serverless.config.servicePath,path.resolve(__dirname, 'splunk/splunk-cloudwatch-logs-processor'))
+    const functionPath = path.relative(this.serverless.config.servicePath, path.resolve(__dirname, 'splunk/splunk-cloudwatch-logs-processor'))
     console.log(functionPath)
 
     service.functions.splunk = {
@@ -118,7 +117,7 @@ class SplunkPlugin {
       }
     }
 
-    _.extend(resource, splunkLambdaPermission)
+    _.merge(resource, splunkLambdaPermission)
 
     service.getAllFunctions().forEach((functionName) => {
       if (functionName !== `${serviceName}-splunk`) {
@@ -133,7 +132,7 @@ class SplunkPlugin {
         log.DependsOn.push(logicalName)
 
         console.log(log)
-        _.extend(resource, { [`${logName}`]: log })
+        _.merge(resource, { [`${logName}`]: log })
       }
     })
 
