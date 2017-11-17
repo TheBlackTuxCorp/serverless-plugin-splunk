@@ -1,6 +1,7 @@
 # serverless-plugin-splunk
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![npm version](https://badge.fury.io/js/serverless-plugin-splunk.svg)](https://badge.fury.io/js/serverless-plugin-splunk)
 
 Serverless plugin for adding a function to send logs from Cloudwatch to Splunk and attach it to the log groups for every other function in the package.
 
