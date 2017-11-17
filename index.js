@@ -14,7 +14,7 @@ class SplunkPlugin {
 
     this.hooks = {
       'before:package:initialize': this.update.bind(this),
-      'before:package:compileFunctions': this.add.bind(this)
+      'before:package:compileEvemts': this.add.bind(this)
     }
   }
 
@@ -40,7 +40,7 @@ class SplunkPlugin {
       fs.mkdirSync(functionPath)
     }
 
-    service.functions[`${serviceName}-splunk`] = {
+    service.functions.splunk = {
       handler: 'index.handler',
       events: []
     }
@@ -118,21 +118,19 @@ class SplunkPlugin {
 
     _.extend(resource, splunkLambdaPermission)
 
-    console.log(service.functions)
     service.getAllFunctions().forEach((functionName) => {
-      console.log(functionName)
-      console.log(this.provider.naming.getLogGroupLogicalId(functionName))
-      console.log(service.getFunction(functionName))
       if (functionName !== `${serviceName}-splunk`) {
         let log = LogBase
 
+        const logicalName = this.provider.naming.getLogGroupLogicalId(functionName)
+
         log.Properties.LogGroupName = `/aws/lambda/${service.getFunction(functionName).name}`
 
-        let logName = functionName + 'Splunk'
+        let logName = logicalName + 'Splunk'
 
-        functionName
-        log.DependsOn.push()
+        log.DependsOn.push(logicalName)
 
+        console.log(log)
         _.extend(resource, { [`${logName}`]: log })
       }
     })
