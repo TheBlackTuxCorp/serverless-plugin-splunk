@@ -35,7 +35,8 @@ class SplunkPlugin {
     service.provider.environment.SPLUNK_HEC_URL = service.custom.splunk.url
     service.provider.environment.SPLUNK_HEC_TOKEN = service.custom.splunk.token
 
-    const functionPath = path.resolve(__dirname, 'splunk/splunk-cloudwatch-logs-processor')
+
+    const functionPath = path.relative(this.serverless.config.servicePath,path.resolve(__dirname, 'splunk/splunk-cloudwatch-logs-processor'))
     console.log(functionPath)
 
     service.functions.splunk = {
