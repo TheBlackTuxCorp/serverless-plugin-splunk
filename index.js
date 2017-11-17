@@ -108,16 +108,18 @@ class SplunkPlugin {
     Object.freeze(logBase)
 
     const principal = `logs.${service.provider.region}.amazonaws.com`
-    const splunkLambdaPermission = {
-      Type: 'AWS::Lambda::Permission',
-      Properties: {
-        FunctionName: destination,
-        Action: 'lambda:InvokeFunction',
-        Principal: principal
+    const permission = {
+      splunkLambdaPermission: {
+        Type: 'AWS::Lambda::Permission',
+        Properties: {
+          FunctionName: destination,
+          Action: 'lambda:InvokeFunction',
+          Principal: principal
+        }
       }
     }
 
-    _.extend(resource, splunkLambdaPermission)
+    _.extend(resource, permission)
 
     service.getAllFunctions().forEach((functionName) => {
       if (functionName !== `${serviceName}-splunk`) {
