@@ -36,7 +36,6 @@ class SplunkPlugin {
     service.provider.environment.SPLUNK_HEC_TOKEN = service.custom.splunk.token
 
     const functionPath = path.relative(this.serverless.config.servicePath, path.resolve(__dirname, 'splunk/splunk-cloudwatch-logs-processor'))
-    console.log(functionPath)
 
     service.functions.splunk = {
       handler: `${functionPath}/index.handler`,
@@ -44,7 +43,6 @@ class SplunkPlugin {
     }
 
     this.serverless.cli.log('Splunk Function Added...')
-    console.log(service.functions)
   }
 
   /**
@@ -98,7 +96,7 @@ class SplunkPlugin {
 
     const resource = {}
 
-    const LogBase = {
+    const logBase = {
       Type: 'AWS::Logs::SubscriptionFilter',
       Properties: {
         DestinationArn: destination,
@@ -106,6 +104,8 @@ class SplunkPlugin {
       },
       DependsOn: ['splunkLambdaPermission']
     }
+
+    Object.freeze(logBase)
 
     const principal = `logs.${service.provider.region}.amazonaws.com`
     const splunkLambdaPermission = {
@@ -117,11 +117,11 @@ class SplunkPlugin {
       }
     }
 
-    _.merge(resource, splunkLambdaPermission)
+    _.extend(resource, splunkLambdaPermission)
 
     service.getAllFunctions().forEach((functionName) => {
       if (functionName !== `${serviceName}-splunk`) {
-        let log = LogBase
+        let log = logBase
 
         const logicalName = this.provider.naming.getLogGroupLogicalId(functionName)
 
@@ -131,11 +131,11 @@ class SplunkPlugin {
 
         log.DependsOn.push(logicalName)
 
-        console.log(log)
-        _.merge(resource, { [`${logName}`]: log })
+        _.extend(resource, { [`${logName}`]: log })
       }
     })
 
+    console.log(resource)
     return resource
   }
 }
