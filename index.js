@@ -96,20 +96,9 @@ class SplunkPlugin {
 
     const resource = {}
 
-    const logBase = {
-      Type: 'AWS::Logs::SubscriptionFilter',
-      Properties: {
-        DestinationArn: destination,
-        FilterPattern: ''
-      },
-      DependsOn: ['splunkLambdaPermission']
-    }
-
-    Object.freeze(logBase)
-
     const principal = `logs.${service.provider.region}.amazonaws.com`
     const permission = {
-      splunkLambdaPermission: {
+      SplunkLambdaPermission: {
         Type: 'AWS::Lambda::Permission',
         Properties: {
           FunctionName: destination,
@@ -119,21 +108,33 @@ class SplunkPlugin {
       }
     }
 
+    const logBase = {
+      Type: 'AWS::Logs::SubscriptionFilter',
+      Properties: {
+        DestinationArn: destination,
+        FilterPattern: ''
+      },
+      DependsOn: ['SplunkLambdaPermission']
+    }
+
+    Object.freeze(logBase)
+
     _.extend(resource, permission)
 
     service.getAllFunctions().forEach((functionName) => {
       if (functionName !== `${serviceName}-splunk`) {
-        let log = logBase
+
 
         const logicalName = this.provider.naming.getLogGroupLogicalId(functionName)
+        const logName = logicalName + 'Splunk'
+
+        let log = { [`${logName}`]: logBase }
 
         log.Properties.LogGroupName = `/aws/lambda/${service.getFunction(functionName).name}`
 
-        let logName = logicalName + 'Splunk'
-
         log.DependsOn.push(logicalName)
 
-        _.extend(resource, { [`${logName}`]: log })
+        _.extend(resource, log)
       }
     })
 
