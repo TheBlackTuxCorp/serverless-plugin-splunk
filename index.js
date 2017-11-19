@@ -123,16 +123,14 @@ class SplunkPlugin {
 
     service.getAllFunctions().forEach((functionName) => {
       if (functionName !== `${serviceName}-splunk`) {
-
-
         const logicalName = this.provider.naming.getLogGroupLogicalId(functionName)
         const logName = logicalName + 'Splunk'
 
         let log = { [`${logName}`]: logBase }
 
-        log.Properties.LogGroupName = `/aws/lambda/${service.getFunction(functionName).name}`
+        log[`${logName}`].Properties.LogGroupName = `/aws/lambda/${service.getFunction(functionName).name}`
 
-        log.DependsOn.push(logicalName)
+        log[`${logName}`].DependsOn.push(logicalName)
 
         _.extend(resource, log)
       }
