@@ -22,14 +22,24 @@ class SplunkPlugin {
    * Start bindings
    */
   start () {
-    this.update()
-    this.addFunction()
+    const stage = this.stage
+
+    if (service.custom.splunk) {
+      if (service.custom.splunk.excludestages &&
+        service.custom.splunk.excludestages.includes(stage)) {
+        this.serverless.cli.log(`Splunk is ignored for ${stage} stage`)
+        return
+      } else {
+        this.add()
+        this.update()
+      }
+    }
   }
 
   /**
    * Add Splunk function to this package
    */
-  addFunction () {
+  add () {
     const service = this.serverless.service
     const stage = this.stage
 
@@ -59,15 +69,6 @@ class SplunkPlugin {
    */
   update () {
     const service = this.serverless.service
-    const stage = this.stage
-
-    if (service.custom.splunk) {
-      if (service.custom.splunk.excludestages &&
-        service.custom.splunk.excludestages.includes(stage)) {
-        this.serverless.cli.log(`Splunk is ignored for ${stage} stage`)
-        return
-      }
-    }
 
     this.serverless.cli.log('Updating Splunk Resources...')
     const resource = this.create()
