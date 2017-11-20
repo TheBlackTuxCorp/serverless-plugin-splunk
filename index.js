@@ -13,15 +13,23 @@ class SplunkPlugin {
     this.stage = (this.options.stage && (this.options.stage.length > 0)) ? this.options.stage : service.provider.stage
 
     this.hooks = {
-      'before:package:initialize': this.update.bind(this),
-      'before:package:compileEvents': this.add.bind(this)
+      'before:package:initialize': this.start.bind(this),
+      'after:deploy:deploy': this.cleanup.bind(this)
     }
+  }
+
+  /**
+   * Start bindings
+   */
+  start () {
+    this.update()
+    this.addFunction()
   }
 
   /**
    * Add Splunk function to this package
    */
-  add () {
+  addFunction () {
     const service = this.serverless.service
     const stage = this.stage
 
@@ -35,10 +43,11 @@ class SplunkPlugin {
     service.provider.environment.SPLUNK_HEC_URL = service.custom.splunk.url
     service.provider.environment.SPLUNK_HEC_TOKEN = service.custom.splunk.token
 
-    const functionPath = path.relative(this.serverless.config.servicePath, path.resolve(__dirname, 'splunk/splunk-cloudwatch-logs-processor'))
+    let splunkFile = fs.readFileSync(path.resolve(__dirname, 'splunk/splunk-cloudwatch-logs-processor/index.js'))
+    fs.writeFileSync(path.join(this.serverless.config.servicePath, 'splunk.js'), splunkFile)
 
     service.functions.splunk = {
-      handler: `${functionPath}/index.handler`,
+      handler: `splunk.handler`,
       events: []
     }
 
@@ -88,7 +97,7 @@ class SplunkPlugin {
     } else {
       destination = {
         'Fn::GetAtt': [
-          `${serviceName}-splunk`,
+          `SplunkLambdaFunction`,
           'Arn'
         ]
       }
@@ -111,7 +120,7 @@ class SplunkPlugin {
     _.extend(resource, permission)
 
     service.getAllFunctions().forEach((functionName) => {
-      if (functionName !== `${serviceName}-splunk`) {
+      if (functionName !== 'splunk') {
         const logicalName = this.provider.naming.getLogGroupLogicalId(functionName)
         const logName = logicalName + 'Splunk'
 
@@ -133,8 +142,20 @@ class SplunkPlugin {
       }
     })
 
-    console.log(resource)
     return resource
+  }
+
+  cleanup () {
+    this.serverless.cli.log('Removing temporary Splunk function file')
+    let splunkFile = path.join(this.serverless.config.servicePath, 'splunk.js')
+
+    try {
+      if (fs.existsSync(splunkFile)) {
+        fs.unlinkSync(splunkFile)
+      }
+    } catch (err) {
+      throw new Error(err)
+    }
   }
 }
 
