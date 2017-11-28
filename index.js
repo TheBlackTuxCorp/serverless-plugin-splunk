@@ -22,6 +22,7 @@ class SplunkPlugin {
    * Start bindings
    */
   start () {
+    const service = this.serverless.service
     const stage = this.stage
 
     if (service.custom.splunk) {
@@ -58,7 +59,8 @@ class SplunkPlugin {
 
     service.functions.splunk = {
       handler: `splunk.handler`,
-      events: []
+      events: [],
+      name: `${service.service}-${stage}-splunk`
     }
 
     this.serverless.cli.log('Splunk Function Added...')
