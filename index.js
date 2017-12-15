@@ -54,7 +54,7 @@ class SplunkPlugin {
     service.provider.environment.SPLUNK_HEC_URL = service.custom.splunk.url
     service.provider.environment.SPLUNK_HEC_TOKEN = service.custom.splunk.token
 
-    let splunkFile = fs.readFileSync(path.resolve(__dirname, 'splunk/splunk-cloudwatch-logs-processor/index.js'))
+    let splunkFile = fs.readFileSync(path.resolve(__dirname, 'splunk.js'))
     fs.writeFileSync(path.join(this.serverless.config.servicePath, 'splunk.js'), splunkFile)
 
     service.functions.splunk = {
@@ -92,7 +92,6 @@ class SplunkPlugin {
   create () {
     const service = this.serverless.service
     const stage = this.stage
-    const serviceName = stage ? `${service.service}-${stage}` : service.service
 
     let destination = null
     if (service.custom.splunk.arn) {
