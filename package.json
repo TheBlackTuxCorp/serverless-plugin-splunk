@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TheBlackTuxCorp/serverless-plugin-cicd.git"
+    "url": "git+https://github.com/TheBlackTuxCorp/serverless-plugin-splunk.git"
   },
   "keywords": [
     "Serverless",
@@ -20,9 +20,9 @@
   "author": "The Black Tux",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/TheBlackTuxCorp/serverless-plugin-cicd/issues"
+    "url": "https://github.com/TheBlackTuxCorp/serverless-plugin-splunk/issues"
   },
-  "homepage": "https://github.com/TheBlackTuxCorp/serverless-plugin-cicd#readme",
+  "homepage": "https://github.com/TheBlackTuxCorp/serverless-plugin-splunk#readme",
   "dependencies": {
     "lodash": "^4.17.4",
     "splunk-logging": "^0.9.3"
