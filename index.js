@@ -52,7 +52,7 @@ class SplunkPlugin {
     this.serverless.cli.log('Adding Splunk Function...')
 
     // The Splunk lambda must be node runtime
-    if (service.provider.runtime.indexOf('nodejs') < 0) provider.runtime = 'nodejs6.10'
+    if (service.provider.runtime.indexOf('nodejs') < 0) service.provider.runtime = 'nodejs6.10'
 
     service.provider.environment.SPLUNK_HEC_URL = service.custom.splunk.url
     service.provider.environment.SPLUNK_HEC_TOKEN = service.custom.splunk.token
