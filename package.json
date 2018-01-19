@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-splunk",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Serverless plugin for adding a function to send logs from Cloudwatch to Splunk and attach it to the log groups for every other function in the package",
   "main": "index.js",
   "scripts": {
